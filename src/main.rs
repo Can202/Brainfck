@@ -1,4 +1,9 @@
 use std::io;
+
+// File reading
+use std::fs::File;
+use std::io::Read;
+
 const ADD: u8 = b'+';
 const SUBSTRACT: u8 = b'-';
 const LBRACKET: u8 = b'[';
@@ -11,12 +16,22 @@ const COMMENT: u8 = b'/';
 const SPACE: u8 = b' ';
 const NEWLINE: u8 = b'\n';
 
-fn main() {
-    read_code(String::from("+++[>+++[>++<-]<-]>>."), false);
+// File reading
+fn main() -> io::Result<()> {
+    let mut file = File::open("example.txt")?;
+    
+    let mut code = String::new();
+    file.read_to_string(&mut code)?;
+
+    println!("{}", code);
+    read_code(&code, false);
+
+    Ok(())
 }
 
 
-fn read_code(code: String, debug: bool) {
+
+fn read_code(code: &String, debug: bool) {
     let bytes = code.as_bytes();
 
     let mut memory: Vec<i32> = vec![0];
