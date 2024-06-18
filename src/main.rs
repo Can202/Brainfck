@@ -21,16 +21,22 @@ fn main() -> io::Result<()> {
 
     let args: Vec<String> = env::args().collect();
     if args.len() > 1{
+
+        let mut debug = false;
+        for i in 0..args.len() {
+            if args[i] == "--debug" || args[i] == "-d"{
+                debug = true;
+            }
+        }
+
         let text = args[1].clone();
-        println!("{}", text);
 
         let mut file = File::open(&text)?;
         
         let mut code = String::new();
         file.read_to_string(&mut code)?;
 
-        //println!("{}", code);
-        read_code(&code, false);
+        read_code(&code, debug);
     }
     Ok(())
 }
