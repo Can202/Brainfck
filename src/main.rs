@@ -12,7 +12,7 @@ const SPACE: u8 = b' ';
 const NEWLINE: u8 = b'\n';
 
 fn main() {
-    read_code(String::from(",[>+++<-]>."), false);
+    read_code(String::from("+++[>+++[>++<-]<-]>>."), false);
 }
 
 
@@ -24,6 +24,7 @@ fn read_code(code: String, debug: bool) {
     let mut pointer: usize = 0;
 
     let mut position_loop_started: Vec<i32> = vec![0];
+    let mut loop_counter: usize = 0;
 
     let mut i: usize = 0;
     while i < bytes.len() {
@@ -61,17 +62,22 @@ fn read_code(code: String, debug: bool) {
             memory[pointer] = number as i32;
         }
         else if byte == LBRACKET {
-            position_loop_started[0] = i as i32;
+            loop_counter += 1;
+            update_vec(&mut position_loop_started, loop_counter-1);
+            position_loop_started[loop_counter - 1] = i as i32;
         }
         else if byte == RBRACKET {
             if memory[pointer] != 0 {
-                i = position_loop_started[0] as usize;
+                i = position_loop_started[loop_counter - 1] as usize;
+            } else {
+                loop_counter -= 1;
             }
             
         }
 
         if debug {
-            println!("Action: {}. Vec: {:?}", byte ,memory);
+            println!("Action: {}. Vec: {:?}", byte, memory);
+            println!("loop_counter: {}. position_loop_started: {:?}", loop_counter, position_loop_started);
         }
 
         i+=1;
