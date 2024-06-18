@@ -15,6 +15,7 @@ const LEFT: u8 = b'<';
 const COMMENT: u8 = b'/';
 const SPACE: u8 = b' ';
 const NEWLINE: u8 = b'\n';
+const PRINTOPTION: u8 = b';';
 
 // File reading
 fn main() -> io::Result<()> {
@@ -23,7 +24,7 @@ fn main() -> io::Result<()> {
     let mut code = String::new();
     file.read_to_string(&mut code)?;
 
-    println!("{}", code);
+    //println!("{}", code);
     read_code(&code, false);
 
     Ok(())
@@ -41,6 +42,8 @@ fn read_code(code: &String, debug: bool) {
     let mut position_loop_started: Vec<i32> = vec![0];
     let mut loop_counter: usize = 0;
 
+    let mut print_in_letters = false;
+
     let mut i: usize = 0;
     while i < bytes.len() {
         let byte = bytes[i];
@@ -54,6 +57,9 @@ fn read_code(code: &String, debug: bool) {
             continue;
         }
         if byte == NEWLINE || byte == SPACE {}
+        else if byte == PRINTOPTION {
+            print_in_letters = !print_in_letters;
+        }
         else if byte == ADD {
             memory[pointer] += 1;
         }
@@ -68,7 +74,14 @@ fn read_code(code: &String, debug: bool) {
             pointer -= 1;
         }
         else if byte == POINT {
-            println!("{}", memory[pointer]);
+            if print_in_letters {
+                print!("{}", memory[pointer] as u8 as char);
+                io::Write::flush(&mut io::stdout()).expect("Failed to flush stdout");
+            }
+            else {
+                print!(" {} ", memory[pointer]);
+                io::Write::flush(&mut io::stdout()).expect("Failed to flush stdout");
+            }
         }
         else if byte == COMMA {
             let mut number = String::new();
