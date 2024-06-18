@@ -1,6 +1,5 @@
 use std::io;
-
-// File reading
+use std::env;
 use std::fs::File;
 use std::io::Read;
 
@@ -19,14 +18,20 @@ const PRINTOPTION: u8 = b';';
 
 // File reading
 fn main() -> io::Result<()> {
-    let mut file = File::open("example.txt")?;
-    
-    let mut code = String::new();
-    file.read_to_string(&mut code)?;
 
-    //println!("{}", code);
-    read_code(&code, false);
+    let args: Vec<String> = env::args().collect();
+    if args.len() > 1{
+        let text = args[1].clone();
+        println!("{}", text);
 
+        let mut file = File::open(&text)?;
+        
+        let mut code = String::new();
+        file.read_to_string(&mut code)?;
+
+        //println!("{}", code);
+        read_code(&code, false);
+    }
     Ok(())
 }
 
@@ -79,7 +84,7 @@ fn read_code(code: &String, debug: bool) {
                 io::Write::flush(&mut io::stdout()).expect("Failed to flush stdout");
             }
             else {
-                print!(" {} ", memory[pointer]);
+                print!("{} ", memory[pointer]);
                 io::Write::flush(&mut io::stdout()).expect("Failed to flush stdout");
             }
         }
@@ -110,6 +115,7 @@ fn read_code(code: &String, debug: bool) {
 
         i+=1;
     }
+    println!("");
 }
 
 
