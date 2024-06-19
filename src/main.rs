@@ -115,7 +115,9 @@ fn read_code(code: &String, debug: bool) {
         }
 
         if debug {
-            println!("Action: {}. Vec: {:?}", byte, memory);
+            println!("-----------------");
+            println!("{}", byte as char);
+            println!("{:?}", memory);
             println!("loop_counter: {}. position_loop_started: {:?}", loop_counter, position_loop_started);
         }
 
